@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= title %></title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f8f8f8;
+      }
+      .error-container {
+        text-align: center;
+        margin-top: 50px;
+      }
+      .error-container h1 {
+        color: red;
+      }
+      .error-container p {
+        color: #333;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="error-container">
+      <h1>Error</h1>
+      <p><%= message || "Error desconocido" %></p>
+    </div>
+  </body>
+</html>

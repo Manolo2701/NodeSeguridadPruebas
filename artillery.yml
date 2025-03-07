@@ -1,0 +1,57 @@
+config:
+  target: "http://localhost:3000"  
+  phases:
+    - duration: 30
+      arrivalRate: 5
+      name: Warm up
+    - duration: 60
+      arrivalRate: 10
+      rampTo: 20
+      name: Ramp up load
+    - duration: 30
+      arrivalRate: 20
+      name: Sustained load
+  http:
+    timeout: 30 
+
+scenarios:
+  - name: "Cliente flujo"
+    weight: 70
+    flow:
+      - post:
+          url: "/api/clientes/registro"
+          json:
+            nombre: "Test User"
+            email: "{{ $randomString() }}@example.com"
+            password: "password123"
+      - post:
+          url: "/api/clientes/login"
+          json:
+            email: "{{ $randomString() }}@example.com"
+            password: "password123"
+      - get:
+          url: "/api/clientes/perfil"
+      - put:
+          url: "/api/clientes/actualizar"
+          json:
+            nombre: "Updated Test User"
+
+  - name: "Platos flujo"
+    weight: 30
+    flow:
+      - get:
+          url: "/api/platos"
+      - get:
+          url: "/api/platos/{{ $randomNumber(1,5) }}"
+      - post:
+          url: "/api/platos"
+          json:
+            nombre: "Nuevo Plato {{ $randomString() }}"
+            descripcion: "Descripción del nuevo plato"
+            precio: "{{ $randomNumber(10,30) }}.99"
+            categoria: "{{ $randomItem('Entrante','Plato principal','Postre') }}"
+      - put:
+          url: "/api/platos/{{ $randomNumber(1,5) }}"
+          json:
+            nombre: "Plato Actualizado {{ $randomString() }}"
+            precio: "{{ $randomNumber(10,30) }}.99"

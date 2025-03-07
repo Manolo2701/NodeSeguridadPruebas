@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f8f8;
+      }
+      h2 {
+        color: #333;
+        text-align: center;
+      }
+      ul {
+        list-style-type: none;
+        padding: 0;
+        max-width: 800px;
+        margin: 0 auto;
+      }
+      li {
+        background-color: #fff;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Lista de Reservas</h2>
+    <ul>
+      <% reservas.forEach(function(reserva) { %>
+      <li>
+        ID: <%= reserva.id %> - Mesa: <%= reserva.mesa %> - Fecha: <%= reserva.fecha %> - Estado: <%= reserva.estado %>
+      </li>
+      <% }); %>
+    </ul>
+  </body>
+</html>

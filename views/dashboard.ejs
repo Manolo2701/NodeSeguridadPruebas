@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Dashboard</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f8f8;
+      }
+      h2 {
+        color: #333;
+        text-align: center;
+      }
+      nav {
+        text-align: center;
+        margin-top: 20px;
+      }
+      nav a {
+        color: #4caf50;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+      nav a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Bienvenido, <%= user.nombre %></h2>
+    <nav>
+      <a href="/api/reservas/crear/view">Crear Reserva</a> |
+      <a href="/api/platos/crear/view">Crear Plato</a> |
+      <a href="/api/reservas/lista/view">Ver Reservas</a> |
+      <a href="/api/platos/lista/view">Ver Platos</a> |
+      <a href="/api/clientes/logout">Cerrar Sesión</a>
+    </nav>
+  </body>
+</html>

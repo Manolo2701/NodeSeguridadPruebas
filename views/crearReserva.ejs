@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= title %></title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f8f8f8;
+      }
+      h2 {
+        color: #333;
+        text-align: center;
+      }
+      form {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      label {
+        display: block;
+        margin-top: 10px;
+        color: #666;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        display: block;
+        width: 100%;
+        margin-top: 20px;
+        padding: 10px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Crear Reserva</h2>
+    <form action="/api/reservas" method="POST">
+      <label for="mesa">Número de Mesa:</label>
+      <input type="number" name="mesa" required />
+      <label for="fecha">Fecha:</label>
+      <input type="datetime-local" name="fecha" required />
+      <label for="estado">Estado:</label>
+      <select name="estado">
+        <option value="pendiente">Pendiente</option>
+        <option value="confirmada">Confirmada</option>
+        <option value="cancelada">Cancelada</option>
+      </select>
+      <label for="dni">DNI del Cliente:</label>
+      <input type="text" name="dni" required maxlength="10" />
+      <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+      <button type="submit">Crear Reserva</button>
+    </form>
+  </body>
+</html>
