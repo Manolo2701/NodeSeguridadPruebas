@@ -16,35 +16,23 @@ const csrf = require('csurf');
 
 const app = express();
 
-// Configuración de seguridad
 app.use(helmet());
-
-// Configuración de rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-});
-app.use(limiter);
-
-// Middleware globales
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(cookieParser());
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      secure: process.env.NODE_ENV === 'production',
-      httpOnly: true,
-      sameSite: 'Strict',
-    },
-  })
-);
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: process.env.NODE_ENV === 'production',
+    httpOnly: true,
+    sameSite: 'Strict',
+  },
+}));
 
-// Configuración de CSRF
 if (process.env.NODE_ENV !== 'test') {
   app.use(csrf({ cookie: true }));
   app.use((req, res, next) => {
@@ -53,42 +41,30 @@ if (process.env.NODE_ENV !== 'test') {
   });
 }
 
-// Configurar EJS
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-
-// Servir archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Importar rutas
 const clienteRoutes = require('./routes/clienteRoutes');
 const reservaRoutes = require('./routes/reservaRoutes');
 const platoRoutes = require('./routes/platoRoutes');
 const homeRoutes = require('./routes/homeRoutes');
 const authRoutes = require('./routes/authRoutes');
 
-// Usar rutas
 app.use('/', homeRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/reservas', reservaRoutes);
 app.use('/api/platos', platoRoutes);
 app.use('/auth', authRoutes);
 
-// Manejo de rutas no encontradas
-app.use((req, res, next) => {
+app.use((req, res) => {
   res.status(404).json({ message: 'Ruta no encontrada' });
 });
-
-// Middleware de manejo de errores
 app.use(errorHandler);
 
-// Sincronización de la base de datos solo en entorno de producción
 if (process.env.NODE_ENV !== 'test') {
-  sequelize
-    .sync()
-    .then(() => {
-      logger.info('Base de datos sincronizada');
-    })
+  sequelize.sync()
+    .then(() => logger.info('Base de datos sincronizada'))
     .catch((error) => {
       logger.error('Error al sincronizar la BD:', { error: error.toString() });
       if (error.original) {
@@ -99,31 +75,34 @@ if (process.env.NODE_ENV !== 'test') {
       }
     });
 
-  // Leer certificados SSL
-  const options = {
-    key: fs.readFileSync('./ssl/key.pem'),
-    cert: fs.readFileSync('./ssl/cert.pem'),
-  };
-
-  // Iniciar servidor HTTPS
   const PORT = process.env.PORT || 3000;
-  https.createServer(options, app).listen(PORT, () => {
-    logger.info(`Servidor HTTPS corriendo en https://localhost:${PORT}`);
-  });
+  const keyPath = process.env.TLS_KEY_PATH || path.join(__dirname, 'ssl', 'key.pem');
+  const certPath = process.env.TLS_CERT_PATH || path.join(__dirname, 'ssl', 'cert.pem');
+  const hasCertificates = fs.existsSync(keyPath) && fs.existsSync(certPath);
 
-  // Redirigir HTTP a HTTPS
-  http.createServer((req, res) => {
-    res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
-    res.end();
-  }).listen(80, () => {
-    logger.info('Servidor HTTP redirigiendo a HTTPS en el puerto 80');
-  });
-} else {
-  // Para entorno de prueba, solo exportamos la app
-  logger.info('Aplicación configurada para pruebas');
+  if (hasCertificates) {
+    const options = {
+      key: fs.readFileSync(keyPath),
+      cert: fs.readFileSync(certPath),
+    };
+    https.createServer(options, app).listen(PORT, () => {
+      logger.info(`Servidor HTTPS corriendo en https://localhost:${PORT}`);
+    });
+    http.createServer((req, res) => {
+      res.writeHead(301, { Location: `https://${req.headers.host}${req.url}` });
+      res.end();
+    }).listen(process.env.HTTP_PORT || 8080, () => {
+      logger.info('Redirección HTTP disponible en el puerto configurado');
+    });
+  } else if (process.env.NODE_ENV === 'production') {
+    throw new Error('Faltan certificados TLS. Define TLS_KEY_PATH y TLS_CERT_PATH antes de iniciar en producción.');
+  } else {
+    http.createServer(app).listen(PORT, () => {
+      logger.info(`Servidor HTTP local disponible en http://localhost:${PORT} (solo desarrollo)`);
+    });
+  }
 }
 
-// Manejo de cierre graceful
 process.on('SIGTERM', () => {
   logger.info('SIGTERM recibido. Cerrando servidor.');
   process.exit(0);
