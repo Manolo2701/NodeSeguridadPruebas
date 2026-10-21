@@ -1,133 +1,82 @@
-# Documentación del Proyecto: Sistema de Gestión de Restaurantes
+# Sistema de gestión de restaurantes
 
-## 1. Descripción de la temática y funcionalidades de la aplicación
-El Sistema de Gestión de Restaurantes es una aplicación web diseñada para facilitar la administración de restaurantes, ofreciendo funcionalidades para la gestión de clientes, reservas y platos.
+Proyecto académico de backend desarrollado con Node.js y Express para practicar autenticación, gestión de datos y pruebas automatizadas en una aplicación de reservas de restaurante.
 
-### Funcionalidades principales:
-Gestión de Clientes: Registro, autenticación y mantenimiento de perfiles de clientes.
+> **Aviso:** proyecto educativo para ejecución local. No está auditado ni preparado para producción. Los usuarios y datos de ejemplo son ficticios. No reutilices contraseñas ni secretos de este repositorio en otros sistemas.
 
-Gestión de Reservas: Creación, modificación y cancelación de reservas.
+## Funcionalidades
 
-Gestión de Platos: Administración del menú, incluyendo la adición, modificación y eliminación de platos.
+- Gestión de clientes, reservas y platos.
+- Autenticación con JWT y hash de contraseñas con bcrypt.
+- Sesiones, cookies y protección CSRF.
+- Cabeceras de seguridad con Helmet y limitación de peticiones.
+- Validación de entradas y manejo centralizado de errores.
+- Pruebas con Jest y Supertest.
 
-Sistema de Autenticación: Registro e inicio de sesión seguros para clientes y personal del restaurante.
+## Tecnologías
 
-## 2. Detalles de las pruebas realizadas
-Pruebas Unitarias
-Pruebas de Carga
-Pruebas Manuales
-[Ver documento adjunto con la evidencia de las pruebas]
+- Node.js, Express y EJS
+- MySQL y Sequelize
+- JWT, bcryptjs, express-session, csurf y Helmet
+- Jest y Supertest
 
-## 3. Medidas de seguridad implementadas
-Validación de entradas: Implementación de express-validator para prevenir inyecciones SQL y ataques XSS.
+## Requisitos
 
-HTTPS: Configuración de un servidor HTTPS y redirección de HTTP a HTTPS para todas las comunicaciones.
+- Node.js y npm
+- MySQL
 
-Protección contra CSRF: Uso del middleware CSRF para prevenir ataques de falsificación de solicitudes entre sitios.
+## Instalación local
 
-Autenticación segura:
+1. Clona el repositorio y entra en su carpeta:
 
-Utilización de JSON Web Tokens (JWT) para la gestión de sesiones.
+   ```bash
+   git clone https://github.com/Manolo2701/NodeSeguridadPruebas.git
+   cd NodeSeguridadPruebas
+   ```
 
-Hash de contraseñas con bcrypt.
+2. Instala las dependencias:
 
-Rate Limiting: Implementación de límites de tasa para prevenir ataques de fuerza bruta.
+   ```bash
+   npm install
+   ```
 
-Helmet: Uso del middleware Helmet para establecer cabeceras HTTP relacionadas con la seguridad.
+3. Copia `.env.example` como `.env` y configura los datos de MySQL y los secretos locales. Usa valores aleatorios distintos para `JWT_SECRET`, `JWT_REFRESH_SECRET` y `SESSION_SECRET`. No publiques `.env`.
 
-## 4. Vulnerabilidades identificadas
-Necesidad de implementar una protección más robusta contra ataques de fuerza bruta en los endpoints de login.
+4. Crea la base de datos indicada por `DB_NAME` en MySQL y configura un usuario con los permisos necesarios. Sequelize sincroniza los modelos al iniciar la aplicación fuera del entorno de pruebas.
 
-Posible exposición de información sensible en los mensajes de error.
+5. Inicia la aplicación:
 
-## 5. Conclusiones y posibles mejoras
-### Conclusiones
-La aplicación proporciona una base sólida para la gestión de restaurantes con funcionalidades esenciales implementadas.
+   ```bash
+   npm start
+   ```
 
-Las medidas de seguridad básicas están en su lugar, pero hay margen de mejora.
+   Si no hay certificados TLS, se usa HTTP para desarrollo local en `http://localhost:3000`. No expongas este modo a Internet. Para HTTPS, configura `TLS_KEY_PATH` y `TLS_CERT_PATH` con certificados locales; nunca guardes claves privadas en Git. En modo producción ambos certificados son obligatorios.
 
-El rendimiento bajo carga es aceptable, pero podría optimizarse.
+## Pruebas
 
-### Posibles mejoras
-Actualizar bcryptjs a bcrypt: Se recomienda actualizar de bcryptjs a bcrypt para mejorar el rendimiento en el hashing de contraseñas.
+```bash
+npm test
+```
 
-Optimizar consultas a la base de datos: Revisar y optimizar las consultas SQL para mejorar el rendimiento bajo carga.
+Las pruebas necesitan una base de datos MySQL configurada para testing. Utiliza una base de datos separada: algunos tests sincronizan los modelos con `force: true`, lo que elimina y recrea tablas.
 
-Implementar logging: Añadir un sistema de logging robusto para facilitar el debugging y monitoreo.
+## Configuración
 
-Ampliar cobertura de pruebas: Aumentar la cobertura de pruebas unitarias y de integración.
+Variables principales de `.env.example`:
 
-Implementar autenticación de dos factores: Para mejorar la seguridad de las cuentas de usuario.
+- `DB_HOST`, `DB_PORT`, `DB_USER`, `DB_PASSWORD`, `DB_NAME`, `DB_DIALECT`
+- `PORT`
+- `JWT_SECRET`, `JWT_REFRESH_SECRET`, `SESSION_SECRET`
+- `COOKIE_DOMAIN`, `NODE_ENV`
+- `TLS_KEY_PATH`, `TLS_CERT_PATH` (opcionales en desarrollo; necesarios en producción)
 
-Revisar y actualizar dependencias: Mantener todas las dependencias actualizadas para evitar vulnerabilidades conocidas.
+El archivo `.env.example` contiene valores ilustrativos. Sustitúyelos en tu copia local.
 
-Implementar una estrategia de caché: Para mejorar los tiempos de respuesta en operaciones frecuentes.
+## Aprendizajes y alcance
 
-Terminar las vistas: Para poder hacer un mejor uso del proyecto, se recomienda terminar las vistas o añadir otro tipo de frontend
+Este repositorio recoge prácticas académicas sobre autenticación, seguridad básica y testing. Las medidas incluidas son ejercicios de aprendizaje y no sustituyen una revisión de seguridad profesional.
 
-## 6.onfiguración de la base de datos
-### Instalación de MySQL
-Si no tienes MySQL instalado, sigue estos pasos:
+## Autor
 
-#### Para Debian/Ubuntu:
-
-sudo apt update
-sudo apt install mysql-server
-
-
-#### Para macOS (usando Homebrew):
-
-brew install mysql
-
-
-#### Para Windows:
-
-Descarga el instalador de MySQL desde el sitio oficial de MySQL.
-
-Ejecuta el instalador y sigue las instrucciones.
-
-### Creación de la base de datos
-Accede a MySQL:
-
-mysql -u root -p
-
-Crea la base de datos RESTAURANTE:
-
-CREATE DATABASE RESTAURANTE;
-USE RESTAURANTE;
-
-Las tablas se crearán automáticamente al iniciar la aplicación.
-
-Crea al usuario camarero:
-CREATE USER 'camarero'@'localhost' IDENTIFIED BY 'cam12';
-GRANT ALL PRIVILEGES ON RESTAURANTE.* TO 'camarero'@'localhost';
-FLUSH PRIVILEGES;
-
-Entra como camarero:
-mysql -u camarero -p -h localhost
-password: cam12
-
-USE RESTAURANTE;
-
-Datos iniciales
-Ejecuta las siguientes consultas para insertar datos iniciales:
-
-INSERT INTO Clientes (dni, nombre, email, password_hash, tipo_cliente, createdAt, updatedAt) VALUES
-('12345678A', 'Admin User', 'admin@test.com', '$2b$10$X/hG4xHBzWe.riUOa.z7m.d7i2TBvhP.F9CYhzWNvZgGG6.MQSKlO', 'admin', NOW(), NOW()),
-('87654321B', 'Cliente Normal', 'cliente1@test.com', '$2b$10$X/hG4xHBzWe.riUOa.z7m.d7i2TBvhP.F9CYhzWNvZgGG6.MQSKlO', 'cliente', NOW(), NOW()),
-('11223344C', 'Cliente VIP', 'cliente2@test.com', '$2b$10$X/hG4xHBzWe.riUOa.z7m.d7i2TBvhP.F9CYhzWNvZgGG6.MQSKlO', 'cliente', NOW(), NOW()),
-('55667788D', 'Cliente Nuevo', 'cliente3@test.com', '$2b$10$X/hG4xHBzWe.riUOa.z7m.d7i2TBvhP.F9CYhzWNvZgGG6.MQSKlO', 'cliente', NOW(), NOW());
-
-INSERT INTO Platos (nombre, precio, descripcion, categoria, createdAt, updatedAt) VALUES
-('Paella Valenciana', 15.99, 'Auténtica paella con pollo y conejo', 'Plato principal', NOW(), NOW()),
-('Gazpacho Andaluz', 7.50, 'Sopa fría de tomate y verduras', 'Entrante', NOW(), NOW()),
-('Tortilla Española', 9.75, 'Tortilla de patatas tradicional', 'Tapa', NOW(), NOW()),
-('Pulpo a la Gallega', 18.50, 'Pulpo cocido con pimentón y aceite de oliva', 'Plato principal', NOW(), NOW()),
-('Crema Catalana', 6.99, 'Postre tradicional catalán', 'Postre', NOW(), NOW());
-
-INSERT INTO Reservas (mesa, fecha, estado, dni, createdAt, updatedAt) VALUES
-(1, '2025-03-10 19:00:00', 'confirmada', '87654321B', NOW(), NOW()),
-(2, '2025-03-11 20:30:00', 'pendiente', '11223344C', NOW(), NOW()),
-(3, '2025-03-12 18:00:00', 'confirmada', '55667788D', NOW(), NOW()),
-(4, '2025-03-13 21:00:00', 'pendiente', '87654321B', NOW(), NOW());
-
+**Manuel Barbado**  
+[GitHub](https://github.com/Manolo2701) · [LinkedIn](https://www.linkedin.com/in/manuel-ramiro-barbado-s%C3%A1nchez-7404b5345/)
