@@ -70,7 +70,7 @@ Variables principales de `.env.example`:
 - `COOKIE_DOMAIN`, `NODE_ENV`
 - `TLS_KEY_PATH`, `TLS_CERT_PATH` (opcionales en desarrollo; necesarios en producción)
 
-El archivo `.env.example` contiene valores ilustrativos. Sustitúyelos en tu copia local.
+El archivo `.env.example` contiene valores ilustrativos. Sustitúyelos en tu copia local. Los archivos `.env`, `.env.test` y los certificados locales se han retirado de la versión actual, pero los commits antiguos pueden conservar sus contenidos. El historial no se ha reescrito; si alguno de esos valores se usó fuera de este ejercicio, revócalo o rótalo.
 
 ## Aprendizajes y alcance
 
