@@ -1,0 +1,23 @@
+# Dependencies
+node_modules/
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+!.env.test.example
+
+# Private keys and certificates
+ssl/*.pem
+*.key
+*.p12
+*.pfx
+
+# Logs and test output
+*.log
+coverage/
+
+# OS and editor files
+.DS_Store
+Thumbs.db
+.vscode/
